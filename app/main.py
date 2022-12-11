@@ -5,7 +5,9 @@ from .routers import images
 app = FastAPI()
 
 app.include_router(
-    router = images.router
+    router = images.router,
+    prefix='/images',
+    tags=['images']
 )
 
 @app.get("/")
