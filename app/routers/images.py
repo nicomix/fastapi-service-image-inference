@@ -8,6 +8,7 @@ from typing import Callable
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import preprocess_input
+import tensorflow as tf
 import numpy as np
 
 model = VGG16(
@@ -27,8 +28,12 @@ def extractFeatures(path):
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
     x = preprocess_input(x)
-    features = model.predict(x)
-    print (features)
+    probs = model(x)
+    class_id = tf.argmax(probs, axis=-1)
+    return {
+        "predicted_class": class_id.numpy().tolist()[0],
+        "probs": model.predict(x)[0].tolist()
+    }
 
 @router.post("/single-inference")
 async def singleInference(file: UploadFile):
@@ -39,5 +44,4 @@ async def singleInference(file: UploadFile):
             tmp_path = Path(tmp.name)
     finally:
         file.file.close()
-    extractFeatures(tmp_path)
-    return tmp_path
+    return extractFeatures(tmp_path)
