@@ -18,12 +18,10 @@ docker run -p 8080:8080 fastapi-service
 ```
 
 ```json
-[
-    {
-        "predicted_class": int,
-        "probs":, float[],
-    }
-]
+{
+    "predicted_class": int,
+    "probs":, float[],
+}
 ```
 
 
